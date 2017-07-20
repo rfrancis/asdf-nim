@@ -1,2 +1,2 @@
-#!/bin/sh
-git ls-remote -t https://github.com/nim-lang/Nim.git | awk '{print $2}' | cut -d/ -f3 | grep -v '{}' | paste -s -
+#!/bin/bash
+echo $(git ls-remote -t https://github.com/nim-lang/Nim.git | awk '{print $2}' | cut -d/ -f3 | grep -v '{}' | sort -t. -n -k2,3)
