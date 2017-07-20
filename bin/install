@@ -1,7 +1,12 @@
 #!/bin/sh
 # instructions taken straight from nim github README
-git clone https://github.com/nim-lang/Nim.git $ASDF_INSTALL_PATH
-cd $ASDF_INSTALL_PATH/Nim
+if [ "$ASDF_INSTALL_TYPE" = "version" ]
+then
+	git clone -b $ASDF_INSTALL_VERSION https://github.com/nim-lang/Nim.git $ASDF_INSTALL_PATH
+else
+	git clone $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+fi
+cd $ASDF_INSTALL_PATH
 git clone --depth 1 https://github.com/nim-lang/csources.git
 cd csources
 sh build.sh
