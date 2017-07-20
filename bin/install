@@ -13,3 +13,4 @@ sh build.sh
 cd ..
 bin/nim c koch
 ./koch boot -d:release
+./koch nimble
