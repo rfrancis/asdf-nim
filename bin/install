@@ -14,3 +14,4 @@ cd .. || exit 1
 bin/nim c koch
 ./koch boot -d:release
 ./koch nimble
+./koch tools
