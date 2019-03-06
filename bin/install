@@ -7,7 +7,14 @@ else
 	git clone --depth 1 "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
 fi
 cd "$ASDF_INSTALL_PATH" || exit 1
+
 git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/csources.git
+# if csources is not tagged, fall back to .0 version:
+if [ $? -ne 0 ]; then
+	DOTZERO_VERSION="`echo $ASDF_INSTALL_VERSION | sed -e 's/[0-9]*$/0/'`"
+	git clone --depth 1 -b "$DOTZERO_VERSION" https://github.com/nim-lang/csources.git
+fi
+
 cd csources || exit 1
 sh build.sh
 cd .. || exit 1
