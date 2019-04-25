@@ -1,24 +1,39 @@
 #!/bin/sh
-# instructions taken straight from nim github README
 if [ "$ASDF_INSTALL_TYPE" = "version" ]
 then
-	git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/Nim.git "$ASDF_INSTALL_PATH"
+    # Recommended install process is to use pre-packaged tarballs
+    # instead of directly cloning branches/tags
+
+    ASDF_DOWNLOAD_VERSION="$(echo $ASDF_INSTALL_VERSION | sed 's/v//')"
+    DOWNLOAD_URL="http://nim-lang.org/download/nim-${ASDF_DOWNLOAD_VERSION}.tar.xz"
+
+    curl -L -C - $DOWNLOAD_URL | tar -xz --strip-components 1 -C "$ASDF_INSTALL_PATH"
+    cd "$ASDF_INSTALL_PATH" || exit 1
+
+    sh build.sh
+    bin/nim c koch
+    ./koch tools
+
 else
+    # Allow direct installation from git source.
+
+    echo "PLEASE NOTE: This method of installation is not recommended."
+
 	git clone --depth 1 "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
-fi
-cd "$ASDF_INSTALL_PATH" || exit 1
+    cd "$ASDF_INSTALL_PATH" || exit 1
 
-git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/csources.git
-# if csources is not tagged, fall back to .0 version:
-if [ $? -ne 0 ]; then
-	DOTZERO_VERSION="`echo $ASDF_INSTALL_VERSION | sed -e 's/[0-9]*$/0/'`"
-	git clone --depth 1 -b "$DOTZERO_VERSION" https://github.com/nim-lang/csources.git
-fi
+    git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/csources.git
+    # if csources is not tagged, fall back to .0 version:
+    if [ $? -ne 0 ]; then
+	    DOTZERO_VERSION="`echo $ASDF_INSTALL_VERSION | sed -e 's/[0-9]*$/0/'`"
+	    git clone --depth 1 -b "$DOTZERO_VERSION" https://github.com/nim-lang/csources.git
+    fi
 
-cd csources || exit 1
-sh build.sh
-cd .. || exit 1
-bin/nim c koch
-./koch boot -d:release
-./koch nimble
-./koch tools
+    cd csources || exit 1
+    sh build.sh
+    cd .. || exit 1
+    bin/nim c koch
+    ./koch boot -d:release
+    ./koch nimble
+    ./koch tools
+fi
