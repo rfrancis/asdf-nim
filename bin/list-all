@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $(git ls-remote -t https://github.com/nim-lang/Nim.git | awk '$0 !~ "{}" { split($2, subfield, "/"); print subfield[3] }' | sort -V)
+echo $(git ls-remote -t https://github.com/nim-lang/Nim.git | awk '$0 !~ "{}" { split($2, subfield, "/"); print subfield[3] }' | sort -V) | tr --delete v
