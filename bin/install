@@ -1,29 +1,12 @@
 #!/bin/sh
 # instructions taken straight from nim github README
-if [ "$ASDF_INSTALL_TYPE" = "version" ]
-then
-	git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/Nim.git "$ASDF_INSTALL_PATH"
-else
-	git clone --depth 1 "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
-fi
+
+NIM_REPOSITORY="https://github.com/nim-lang/Nim.git"
+
+git clone --depth 1 --single-branch -b v"$ASDF_INSTALL_VERSION" "$NIM_REPOSITORY" "$ASDF_INSTALL_PATH"
+
 cd "$ASDF_INSTALL_PATH" || exit 1
 
-if [ -f "./build_all.sh" ]
-then
-	sh ./build_all.sh
-else
-	git clone --depth 1 -b "$ASDF_INSTALL_VERSION" https://github.com/nim-lang/csources.git
-	# if csources is not tagged, fall back to .0 version:
-	if [ $? -ne 0 ]; then
-		DOTZERO_VERSION="`echo $ASDF_INSTALL_VERSION | sed -e 's/[0-9]*$/0/'`"
-		git clone --depth 1 -b "$DOTZERO_VERSION" https://github.com/nim-lang/csources.git
-	fi
+cd "$ASDF_INSTALL_PATH" || exit 1
 
-	cd csources || exit 1
-	sh build.sh
-	cd .. || exit 1
-	bin/nim c koch
-	./koch boot -d:release
-	./koch nimble
-	./koch tools
-fi
+sh build_all.sh || exit 1
