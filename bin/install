@@ -2,7 +2,7 @@
 # Instructions taken straight from nim github README
 
 NIM_REPOSITORY="https://github.com/nim-lang/Nim.git"
-VERSION="v$(echo $ASDF_INSTALL_VERSION | tr --delete v)"
+VERSION="v$(echo $ASDF_INSTALL_VERSION | tr -d v)"
 
 if [ "$ASDF_INSTALL_TYPE" = "version" ]
 then
